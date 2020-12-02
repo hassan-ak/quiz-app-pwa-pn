@@ -5,9 +5,9 @@ name: Deploy PWA Quiz App
 # Controls when the action will run.
 on:
   push:
-    branches: [ master ]
+    branches: [ forSurgeUrl ]
   pull_request:
-    branches: [ master ]
+    branches: [ forSurgeUrl ]
 
 # Define Jobs
 jobs:
