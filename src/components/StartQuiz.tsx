@@ -1,10 +1,13 @@
 // Imports
 // React Imports
-import React from 'react';
+import React, { useContext } from 'react';
 // Material UI Imports
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, FormControl, InputLabel, Select } from '@material-ui/core';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+// Functional Component Imports
+import ApiURLContext from '../functionalComponent/ApiUrlContext';
+import { fetchQuestions } from '../functionalComponent/ApiUtilization';
 
 // Options definations
 // Const to define options for selection of number of questions
@@ -44,6 +47,18 @@ const difficulty = [
   { value: "medium", label: 'Medium',},
   { value: "hard", label: 'Hard',},
 ];
+// Define data type props
+type Props = {
+    recieveNumberOfQuestions: any;
+    recieveCategory: any;
+    recieveDifficulty: any;
+    recieveCheckLoading: any;
+    recieveCheckGameOver: any;
+    recieveCheckQuestions: any;
+    recieveCheckScore : any;
+    recieveCheckUserAnswers: any;
+    recieveCheckNumber: any;
+  }
 // useStyles for stying material UI components
 const useStyles = makeStyles((theme) => ({
   startButton: {
@@ -52,9 +67,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // StartQuiz component Function
-export const StartQuiz = () => {
+export const StartQuiz : React.FC<Props> = ({ 
+                                                recieveNumberOfQuestions, 
+                                                recieveCategory,
+                                                recieveDifficulty,
+                                                recieveCheckLoading,
+                                                recieveCheckGameOver,
+                                                recieveCheckQuestions,
+                                                recieveCheckScore,
+                                                recieveCheckUserAnswers,
+                                                recieveCheckNumber,
+                                            }) => {
     // useStyles for stying material UI component
     const classes = useStyles();
+    // const for useContext for apiUrl
+    const context = useContext(ApiURLContext);
+    const contextValues = Object.values(context);
+    const url:any = contextValues[0];
+    // Function to run on click of start quiz
+    const startQuiz = async() => {
+        recieveCheckLoading(true);
+        recieveCheckGameOver(false);
+        const newQuestions = await fetchQuestions(url)
+        recieveCheckQuestions(newQuestions);
+        recieveCheckScore(0);
+        recieveCheckUserAnswers([]);
+        recieveCheckNumber(0);
+        recieveCheckLoading(false);
+      };
     // Function return
     return (
         // Overall Component
@@ -63,7 +103,7 @@ export const StartQuiz = () => {
             <div>
                 <FormControl variant="outlined" className="formControl">
                 <InputLabel htmlFor="numberOfQuestions">Number of Questions</InputLabel>
-                <Select native label="Number of Questions">
+                <Select native label="Number of Questions" onChange={(e)=>recieveNumberOfQuestions(Number(e.target.value))}>
                     <option aria-label="None" value=""/>
                     {noOfQuestions.map((option) => (<option key={option} value={+option}>{option}</option>))}
                 </Select>
@@ -73,7 +113,7 @@ export const StartQuiz = () => {
             <div>
                 <FormControl variant="outlined" className="formControl">
                 <InputLabel htmlFor="category">Category</InputLabel>
-                <Select native label="Category">
+                <Select native label="Category" onChange={(e)=>recieveCategory(Number(e.target.value))}>
                     <option aria-label="None" value="" />
                     {category.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
                 </Select>
@@ -83,7 +123,7 @@ export const StartQuiz = () => {
             <div>
                 <FormControl variant="outlined" className="formControl">
                 <InputLabel htmlFor="difficulty">Difficulty</InputLabel>
-                <Select native label="Difficulty">
+                <Select native label="Difficulty" onChange={(e)=>recieveDifficulty(e.target.value)}>
                     <option aria-label="None" value="" />
                     {difficulty.map((option) => (<option key={option.value} value={option.value}>{option.label}</option>))}
                 </Select>
@@ -104,6 +144,7 @@ export const StartQuiz = () => {
                     variant="contained"
                     className={classes.startButton}
                     endIcon={<KeyboardArrowRightIcon />}
+                    onClick={startQuiz}
                 >
                     Start Quiz
                 </Button>
