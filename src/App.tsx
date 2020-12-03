@@ -24,53 +24,68 @@ function App() {
   // useState definations for different constants
   // for selected number of questions
   const [selectedNumberOfQuestions, setSelectedNumberOfQuestions] = useState(10)
-    // for catagery of questions
-    const [selectedCategory, setSelectedCategory] = useState(0)
-    // for difficulty of selected questions
-    const [selectedDifficulty, setSelectedDifficulty] = useState("")
-    // for checking if data is loading or loaded
-    const [loading, setLoading] = useState(false);
-    // for checking if game is over or not
-    const [gameOver, setGameOver] = useState(true);
-    // for fetched questions
-    const [questions, setQuestions] = useState<QuestionState[]>([]);
-    // for score
-    const [score, setScore] = useState(0);
-    // for user answer
-    const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
-    // for next question number
-    const [number, setNumber] = useState(0);
-    console.log(questions)
-    // Function Definations
-    // Functions to define functions for recieving data from components
-    async function numberOfQuestions(value:number) {
-      setSelectedNumberOfQuestions(value) 
+  // for catagery of questions
+  const [selectedCategory, setSelectedCategory] = useState(0)
+  // for difficulty of selected questions
+  const [selectedDifficulty, setSelectedDifficulty] = useState("")
+  // for checking if data is loading or loaded
+  const [loading, setLoading] = useState(false);
+  // for checking if game is over or not
+  const [gameOver, setGameOver] = useState(true);
+  // for fetched questions
+  const [questions, setQuestions] = useState<QuestionState[]>([]);
+  // for score
+  const [score, setScore] = useState(0);
+  // for user answer
+  const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
+  // for next question number
+  const [number, setNumber] = useState(0);
+
+  // Function Definations
+  // Functions to define functions for recieving data from components
+  async function numberOfQuestions(value:number) {
+    setSelectedNumberOfQuestions(value) 
+  }
+  async function category(value:number) {
+    setSelectedCategory(value)
+  }
+  async function difficulty(value:string) {
+    setSelectedDifficulty(value)
+  }
+  async function checkLoading(value:boolean) {
+    setLoading(value)
+  }
+  async function checkGameOver(value:boolean) {
+    setGameOver(value)
+  }
+  async function checkQuestions(value:QuestionState[]) {
+    setQuestions(value)
+  }
+  async function checkScore(value:number) {
+    setScore(value)
+  }
+  async function checkUserAnswers(value:AnswerObject[]) {
+    setUserAnswers(value)
+  }
+  async function checkNumber(value:number) {
+    setNumber(value)
+  }
+  // for checking user answer
+  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!gameOver) {
+      const answer = e.currentTarget.value;
+      const correct = questions[number].correct_answer === answer;
+        if (correct) setScore(prev => prev + 1)
+          const answerObject = {
+          question: questions[number].question,
+        answer,
+        correct,
+        correctAnswer: questions[number].correct_answer
+      }
+      setUserAnswers(prev => [...prev, answerObject])
     }
-    async function category(value:number) {
-      setSelectedCategory(value)
-    }
-    async function difficulty(value:string) {
-      setSelectedDifficulty(value)
-    }
-    async function checkLoading(value:boolean) {
-      setLoading(value)
-    }
-    async function checkGameOver(value:boolean) {
-      setGameOver(value)
-    }
-    async function checkQuestions(value:QuestionState[]) {
-      setQuestions(value)
-    }
-    async function checkScore(value:number) {
-      setScore(value)
-    }
-    async function checkUserAnswers(value:AnswerObject[]) {
-      setUserAnswers(value)
-    }
-    async function checkNumber(value:number) {
-      setNumber(value)
-    }
-    // return of App
+  };
+  // return of App
   return (
     <div className="container">
       <ApiUrlProvider
@@ -79,21 +94,36 @@ function App() {
         difficulty={selectedDifficulty}
       >
         <Header/>
-        <StartQuiz
-          recieveNumberOfQuestions={numberOfQuestions}
-          recieveCategory={category}
-          recieveDifficulty={difficulty}
-          recieveCheckLoading={checkLoading}
-          recieveCheckGameOver={checkGameOver}
-          recieveCheckQuestions={checkQuestions}
-          recieveCheckScore={checkScore}
-          recieveCheckUserAnswers={checkUserAnswers}
-          recieveCheckNumber={checkNumber}
-
-        />
-        <Loading/>
-        <Score/>
-        <QuestionsCard/>
+        {gameOver ? (
+          <StartQuiz
+            recieveNumberOfQuestions={numberOfQuestions}
+            recieveCategory={category}
+            recieveDifficulty={difficulty}
+            recieveCheckLoading={checkLoading}
+            recieveCheckGameOver={checkGameOver}
+            recieveCheckQuestions={checkQuestions}
+            recieveCheckScore={checkScore}
+            recieveCheckUserAnswers={checkUserAnswers}
+            recieveCheckNumber={checkNumber}
+          />
+        ): null }
+        {loading ? (
+          <Loading/>
+        ): null }
+        {!gameOver && !loading ? (
+          <Score setScore={score}/>
+        ): null }
+        {!loading && !gameOver ? (
+          <QuestionsCard
+            questionNum={number + 1}
+            totalQuestions={selectedNumberOfQuestions}
+            question={questions[number].question}
+            category = {questions[number].category}
+            answers={questions[number].answers}
+            userAnswer={userAnswers ? userAnswers[number] : undefined }
+            callback={checkAnswer}
+          />
+        ) : null }
         <Next/>
         <EndGame/>
         <PlayAgain/>

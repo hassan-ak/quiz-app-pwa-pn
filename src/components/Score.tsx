@@ -2,14 +2,17 @@
 // React Imports
 import React from 'react';
 
+// Props type defination
+type Props = {
+    setScore: number;
+}
+
 // Score Component Function
-export const Score = () => {
-    // const to show dummy score
-    const score : number = 5;
+export const Score: React.FC<Props> = ({setScore}) => {
     // Score component Return
     return (
         <div>
-            <h2>Score: {score}</h2>
+            <h2>Score: {setScore}</h2>
         </div>
     )
 }
