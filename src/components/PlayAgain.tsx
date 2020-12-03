@@ -8,9 +8,12 @@ import ReplayIcon from '@material-ui/icons/Replay';
 // Web animations Imports
 import useWebAnimations, {flipInX} from "@wellyshen/use-web-animations";
 
-// Dimy data to display
-const score = 1;
-const totalQuestions = 10;
+// Props Type defination
+type Props = {
+    callback: any;
+    setScore: number;
+    totalQuestions: number;
+}
 
 // useStyles for stying material UI components
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +23,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // StartQuiz component Function
-export const PlayAgain = () => {
+export const PlayAgain : React.FC<Props> = ({   callback,
+                                                setScore,
+                                                totalQuestions
+                                            }) => {
     // useStyles for stying material UI component
     const classes = useStyles();
     // useWebAnimations
@@ -32,7 +38,7 @@ export const PlayAgain = () => {
             <h2>Thank you for taking the Quiz</h2>
             {/* Display Final Score */}
             <div className="finalScore">
-                You Final Score was : <strong ref={ref}>{score} / {totalQuestions}</strong>  
+                You Final Score was : <strong ref={ref}>{setScore} / {totalQuestions}</strong> 
             </div>
             <h2>Hope to See you Again</h2>
             {/* Button to Play Quiz */}
@@ -41,6 +47,7 @@ export const PlayAgain = () => {
                     variant="contained"
                     className={classes.startButton}
                     endIcon={<ReplayIcon/>}
+                    onClick={callback}
                 >
                     Play Again
                 </Button>
