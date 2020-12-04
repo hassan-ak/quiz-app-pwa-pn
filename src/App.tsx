@@ -1,6 +1,8 @@
 // Imports
 // React Imports
 import React , {useState} from 'react';
+// Firebase imports
+import firebase from "./Firebase";
 // Components Imports
 import { Header } from './components/Header';
 import { StartQuiz } from './components/StartQuiz';
@@ -20,6 +22,15 @@ import './App.css';
 
 // App Function
 function App() {
+
+  // Console token if notifactions allowed
+  // This token to be used for testing of push notification
+  const messaging = firebase.messaging();
+    messaging.requestPermission().then(()=>{
+        return messaging.getToken()
+    }).then((token)=>{
+        console.log('token :',token)
+    })
   
   // useState definations for different constants
   // for selected number of questions
