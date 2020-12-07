@@ -1,6 +1,6 @@
 // Imports
 // React Imports
-import React , {useState} from 'react';
+import React , {useEffect, useState} from 'react';
 // Firebase imports
 import firebase from "./Firebase";
 // Components Imports
@@ -19,6 +19,7 @@ import { QuestionState } from './functionalComponent/ApiUtilization';
 import { AnswerObject } from './functionalComponent/ApiUtilization';
 // Styles Imports
 import './App.css';
+import { StartQuiz1 } from './components/StartQuiz1';
 
 // App Function
 function App() {
@@ -53,6 +54,8 @@ function App() {
   const [number, setNumber] = useState(0);
   // for ending game
   const [endGame, setEndGame] = useState(false);
+  // for define offline mode
+  const [dataStored, setDataStored] = useState(false);
 
   // Function Definations
   // Functions to define functions for recieving data from components
@@ -110,7 +113,21 @@ function App() {
   const playagin = async()=>{
     setGameOver(true);
     setEndGame(false);
+    setDataStored(false)
   }
+  // Function to store data in local storage for use in offline mode
+  const fetchQuestionsOffline = async () => {
+    const dataS = await(await fetch("https://opentdb.com/api.php?amount=10&type=multiple")).json();
+    localStorage.setItem("fetchedData", JSON.stringify(dataS));
+    setDataStored(true)
+  };
+
+  useEffect(() => {
+    if (dataStored === false && navigator.onLine ) {
+      fetchQuestionsOffline();
+    }
+  }, [dataStored])
+
   // return of App
   return (
     <div className="container">
@@ -120,8 +137,21 @@ function App() {
         difficulty={selectedDifficulty}
       >
         <Header/>
-        {gameOver ? (
+        {gameOver && navigator.onLine? (
           <StartQuiz
+            recieveNumberOfQuestions={numberOfQuestions}
+            recieveCategory={category}
+            recieveDifficulty={difficulty}
+            recieveCheckLoading={checkLoading}
+            recieveCheckGameOver={checkGameOver}
+            recieveCheckQuestions={checkQuestions}
+            recieveCheckScore={checkScore}
+            recieveCheckUserAnswers={checkUserAnswers}
+            recieveCheckNumber={checkNumber}
+          />
+        ): null }
+        {gameOver && !navigator.onLine? (
+          <StartQuiz1
             recieveNumberOfQuestions={numberOfQuestions}
             recieveCategory={category}
             recieveDifficulty={difficulty}

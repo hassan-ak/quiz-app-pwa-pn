@@ -11,6 +11,8 @@ const cacheAssets = [
   './static/js/main.fa2a758f.chunk.js',
   './static/css/main.69e4d93b.chunk.css',
   './logo192.png',
+  './static/js/main.chunk.js.map',
+  './static/js/0.chunk.js.map',
 ];
 
 self.addEventListener('install', e => {

@@ -1,6 +1,8 @@
 // Imports
 // Firebase Imports
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';        // for authentication
+import 'firebase/messaging';   // for cloud messaging
 
 // Firebase Configrations
 const config = {

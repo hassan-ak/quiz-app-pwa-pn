@@ -4,14 +4,42 @@ export const shuffleArray = (array: any[]) =>
 
 // Function to fetch data from Api
 export const fetchQuestions = async (Url: string) => {
-    const endpoint = Url;
-    const data = await(await fetch(endpoint)).json();
-    return data.results.map((question: Question) => (
-        {
-            ...question,
-            answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+    if (navigator.onLine) {
+        try {
+            const endpoint = Url;
+            const data = await(await fetch(endpoint)).json();
+            return data.results.map((question: Question) => (
+                {
+                    ...question,
+                    answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+                }
+            ))
+        } catch (error) {
+            let data1 = localStorage.getItem('fetchedData');
+            if (data1 !== null) {
+                let data = JSON.parse(data1)
+                return data.results.map((question: Question) => (
+                    {
+                        ...question,
+                        answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+                    }
+                ))
+            }
         }
-    ))
+    } else {
+        let data1 = localStorage.getItem('fetchedData');
+            if (data1 !== null) {
+                let data = JSON.parse(data1)
+                return data.results.map((question: Question) => (
+                    {
+                        ...question,
+                        answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+                    }
+                ))
+            }
+    }
+    
+    
 };
 
 // Type defination of Question
