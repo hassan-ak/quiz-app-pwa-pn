@@ -11,7 +11,7 @@ export const Body = () => {
             </div>
             <div>
                 <p>
-                    Click <a href="http://hassanalikhan-bc2020c01.surge.sh/"><strong>here</strong></a> to use the App.
+                    Click <a href="https://project07a1-hassanalikhan.web.app/"><strong>here</strong></a> to use the App.
                 </p>
             </div>
         </div>
