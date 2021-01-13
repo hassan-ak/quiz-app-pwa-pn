@@ -19,4 +19,4 @@
 * Click "Play Again" button to replay the game.
 
 ## Live Demo
-* You can find the link to live demo [here](http://project07a1-hassanalikhan.surge.sh/).
+* You can find the link to live demo [here](https://project07a1-hassanalikhan.web.app/).
